@@ -11,12 +11,27 @@ int main(int argc, const char* argv[]) {
     int count = 0;
     Student students[64];
 
-
+    while (!feof(fp)) {
+        if (fscanf(fp, "%s %d", students[count].name, &students[count].score) == 2) {
+            count++;
+        }
+    }
 
     int max = 0;
     float avg = 0;
 
 
+    if (count > 0) {
+        int total = 0;
+        max = students[0].score;
+        for (int i = 0; i < count; i++) {
+            if (students[i].score > max) {
+                max = students[i].score;
+            }
+            total += students[i].score;
+        }
+        avg = (float)total / count;
+    }
 
     printf("max: %d\n", max);
     printf("avg: %.2f\n", avg);
@@ -25,4 +40,3 @@ int main(int argc, const char* argv[]) {
 
     return 0;
 }
-

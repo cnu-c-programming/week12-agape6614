@@ -9,19 +9,53 @@ typedef struct config {
     unsigned long long Address;
 } Config;
 
+
 void config_parser(Config* config_ptr) {
 
+    FILE* fp = fopen("config.txt", "r");
+    if (fp == NULL) return;
+
+    char buffer[128];
+    
+
+    while (fscanf(fp, "%s", buffer) != EOF) {
+        
+
+        char* key = strtok(buffer, "=");
+        char* value = strtok(NULL, "=");
+
+        if (key == NULL || value == NULL) continue;
+
+        if (strcmp(key, "InputFileName") == 0) {
+            strcpy(config_ptr->InputFileName, value);
+        } 
+        else if (strcmp(key, "Options") == 0) {
+            config_ptr->Options = atoi(value); // 문자열을 int로 변환
+        } 
+        else if (strcmp(key, "SectionName") == 0) {
+            strcpy(config_ptr->SectionName, value);
+        } 
+        else if (strcmp(key, "Address") == 0) {
+
+            config_ptr->Address = strtoull(value, NULL, 16); 
+        }
+    }
+
+    fclose(fp);
 }
 
 int main(int argc, const char* argv[]) {
     Config config;
+    
+    memset(&config, 0, sizeof(Config)); 
+
     config_parser(&config);
 
-    printf("config: %s %d %s %llu\n", 
-        config.InputFileName, 
-        config.Options,
-        config.SectionName,
-        config.Address);
+    printf("config: %s %d %s %llu\n",
+           config.InputFileName,
+           config.Options,
+           config.SectionName,
+           config.Address);
+
     return 0;
 }
-
